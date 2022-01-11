@@ -51,17 +51,17 @@ typedef struct _list
 typedef int (*insert)(int data,int value);
 typedef int (*del)(LIST_NODE *list_node);
 
-LIST* add_list(LIST *ref_head, int data, insert insert_func);
+LIST* list_insert_node(LIST *ref_head, int data, insert insert_func);
 
-LIST* insert_list(LIST *ref_head, int data, insert insert_func);
+LIST* list_add_node(LIST *ref_head, int data, insert insert_func);
 
-LIST* list_del(LIST* ref_head, del del_func);
+LIST* list_del_node(LIST* ref_head, del del_func);
 
-LIST* list_del_1(LIST* ref_head, del del_func);
+LIST* list_remove_node(LIST* ref_head, del del_func);
 
-void print_list(LIST *head);
+void list_print(LIST *head);
 
-LIST * init_list();
+LIST * list_init();
 
 #endif
 

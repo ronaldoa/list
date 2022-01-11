@@ -9,7 +9,7 @@ int main()
 
     init_sys();
 
-    list = init_list();
+    list = list_init();
 
     if (NULL == list)
     {
@@ -19,10 +19,12 @@ int main()
 
     for (i = 0; i < 10; i++)
     {
-        insert_list(list,i,compare);
+        list_insert_node(list,i,compare);
     }
 
-    print_list(list);
+    //list_del_node(list,)
+
+    list_print(list);
 
     return 0;
 }

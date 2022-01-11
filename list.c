@@ -2,7 +2,7 @@
 #include "mem.h"
 #include "interface.h"
 
-LIST * init_list()
+LIST * list_init()
 {
     LIST *list = (LIST*)MY_MALLOC(sizeof(LIST));
     if (NULL == list)
@@ -15,7 +15,7 @@ LIST * init_list()
     return list;
 }
 
-void print_list(LIST *head)
+void list_print(LIST *head)
 {
     LIST_NODE *temp = NULL;
     for (temp = head->head; temp != NULL; temp = temp->next)
@@ -26,7 +26,7 @@ void print_list(LIST *head)
     printf("len = %d \n",head->len);
 }
 
-LIST* add_list(LIST *ref_head, int data, insert insert_func)
+LIST* list_add_node(LIST *ref_head, int data, insert insert_func)
 {
     LIST_NODE *pre = NULL;
     LIST_NODE *current = NULL;
@@ -51,7 +51,7 @@ LIST* add_list(LIST *ref_head, int data, insert insert_func)
 }
 
 
-LIST *insert_list(LIST *ref_head, int data, insert insert_func)
+LIST *list_insert_node(LIST *ref_head, int data, insert insert_func)
 {
     LIST_NODE **link = NULL;
     LIST_NODE *current = NULL;
@@ -84,7 +84,7 @@ int del_func(LIST_NODE *list_node)
  return 0;
 }
 
-LIST* list_del(LIST* ref_head, del del_func)
+LIST* list_del_node(LIST* ref_head, del del_func)
 {
     LIST_NODE *pre = NULL;
     LIST_NODE *current = NULL;
@@ -119,7 +119,7 @@ LIST* list_del(LIST* ref_head, del del_func)
 
 
 
-LIST* list_del_1(LIST* ref_head, del del_func)
+LIST* list_remove_node(LIST* ref_head, del del_func)
 {
 
     LIST_NODE **current = NULL;

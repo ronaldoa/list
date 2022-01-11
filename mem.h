@@ -15,6 +15,7 @@ typedef struct
 
 INT init_mem();
 void* mem_malloc(MEM_SIZE_T size);
+BOOL mem_free(void *mem);
 
 #ifdef __cplusplus
 }

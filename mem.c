@@ -95,3 +95,29 @@ void * mem_malloc(MEM_SIZE_T size)
 
     return NULL;
 }
+
+BOOL mem_free(void *mem)
+{
+    MEM_T *temp = NULL;
+
+    if (NULL == mem)
+    {
+        return FALSE;
+    }
+
+    if (((U8_T *)mem <(U8_T *)ram) || ((U8_T *)mem > (U8_T *)ram_end))
+    {
+        return FALSE;
+    }
+
+    temp = (MEM_T *)(void *)((U8_T*)ram - SIZEOF_STRUCT_MEM);
+
+    temp->used = 0;
+
+    if (temp < lfree)
+    {
+        lfree = temp;
+    }
+
+    return TRUE;
+}
