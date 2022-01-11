@@ -13,7 +13,8 @@ typedef struct
     U8_T used;
 }MEM_T;
 
-INT mem_init();
+INT init_mem();
+void* mem_malloc(MEM_SIZE_T size);
 
 #ifdef __cplusplus
 }

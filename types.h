@@ -14,7 +14,4 @@ typedef unsigned char U8_T;
 #define TRUE 1
 #define FALSE 0
 
-
-#define MY_MALLOC malloc
-
 #endif

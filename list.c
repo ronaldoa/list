@@ -1,4 +1,19 @@
 #include "list.h"
+#include "mem.h"
+#include "interface.h"
+
+LIST * init_list()
+{
+    LIST *list = (LIST*)MY_MALLOC(sizeof(LIST));
+    if (NULL == list)
+    {
+        return NULL;
+    }
+    list->head = NULL;
+    list->len = 0;
+
+    return list;
+}
 
 void print_list(LIST *head)
 {

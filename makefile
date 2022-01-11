@@ -1,2 +1,2 @@
-list: main.c list.c mem.c 
-	gcc -g -o list main.c list.c mem.c
+list: main.c list.c mem.c interface.c sysconf.c
+	gcc -g -o list main.c list.c mem.c interface.c sysconf.c

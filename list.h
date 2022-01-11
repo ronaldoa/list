@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "types.h"
+#include "mem.h"
 
 typedef struct _node
 {
@@ -59,6 +60,8 @@ LIST* list_del(LIST* ref_head, del del_func);
 LIST* list_del_1(LIST* ref_head, del del_func);
 
 void print_list(LIST *head);
+
+LIST * init_list();
 
 #endif
 
