@@ -2,7 +2,7 @@
 #include "mem.h"
 #include "interface.h"
 
-LIST * list_init()
+LIST *list_init()
 {
     LIST *list = (LIST*)MY_MALLOC(sizeof(LIST));
     if (NULL == list)
@@ -35,7 +35,7 @@ LIST* list_add_node(LIST *ref_head, int data, insert insert_func)
     if(NULL == ref_head)
         return NULL;
 
-    for (current = ref_head->head;current != NULL && !insert_func(data, current->data);)
+    for (current = ref_head->head;current != NULL && !insert_func(current);)
     {
         pre = current;
         current = pre->next;
@@ -48,40 +48,6 @@ LIST* list_add_node(LIST *ref_head, int data, insert insert_func)
     ref_head->len++;
 
     return ref_head;
-}
-
-
-LIST *list_insert_node(LIST *ref_head, int data, insert insert_func)
-{
-    LIST_NODE **link = NULL;
-    LIST_NODE *current = NULL;
-    LIST_NODE *new_node = NULL;
-
-    if (NULL == ref_head)
-    {
-        return NULL;
-    }
-
-    for (link = &(ref_head->head), current = *link; (current = *link) != NULL; link =&(current->next))
-    {
-        if (insert_func(data, current->data))
-            break;
-    }
-
-
-    INIT_LIST_NODE(new_node, data, LIST_NODE);
-
-    new_node->next = current;
-    *link = new_node;
-
-    ref_head->len++;
-
-    return ref_head;
-}
-
-int del_func(LIST_NODE *list_node)
-{
- return 0;
 }
 
 LIST* list_del_node(LIST* ref_head, del del_func)
@@ -103,7 +69,7 @@ LIST* list_del_node(LIST* ref_head, del del_func)
             else
                 pre->next = current->next;
 
-            free(current);
+            MY_FREE(current);
             ref_head->len--;
         }
         else
@@ -119,23 +85,56 @@ LIST* list_del_node(LIST* ref_head, del del_func)
 
 
 
-LIST* list_remove_node(LIST* ref_head, del del_func)
-{
 
-    LIST_NODE **current = NULL;
+LIST *list_insert_node(LIST *ref_head, int data, insert insert_func)
+{
+    LIST_NODE **link = NULL;
+    LIST_NODE *current = NULL;
+    LIST_NODE *new_node = NULL;
+
     if (NULL == ref_head)
     {
         return NULL;
     }
 
-    for (current = &(ref_head->head); *current != NULL;)
+    for (link = &(ref_head->head); (current = *link) != NULL; link =&(current->next))
     {
-        LIST_NODE *entry = *current;
+        if (insert_func(current))
+            break;
+    }
+
+
+    INIT_LIST_NODE(new_node, data, LIST_NODE);
+
+    new_node->next = current;
+    *link = new_node;
+
+    ref_head->len++;
+
+    return ref_head;
+}
+
+
+
+LIST* list_remove_node(LIST* ref_head, del del_func)
+{
+
+    LIST_NODE **current = NULL;
+    LIST_NODE *entry = NULL;
+
+    if (NULL == ref_head)
+    {
+        return NULL;
+    }
+
+    for (current = &(ref_head->head); (entry = *current) != NULL;)
+    {
 
         if (del_func(entry))
         {
             *current = entry->next;
-            free(*current);
+            MY_FREE(*current);
+            ref_head->len--;
         }
         else
         {

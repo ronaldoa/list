@@ -48,8 +48,8 @@ typedef struct _list
         new_node->next = current;\
     }while(0)
 
-typedef int (*insert)(int data,int value);
-typedef int (*del)(LIST_NODE *list_node);
+typedef INT (*insert)(LIST_NODE *node);
+typedef INT (*del)(LIST_NODE *list_node);
 
 LIST* list_insert_node(LIST *ref_head, int data, insert insert_func);
 

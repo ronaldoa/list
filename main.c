@@ -22,7 +22,9 @@ int main()
         list_insert_node(list,i,compare);
     }
 
-    //list_del_node(list,)
+    list_print(list);
+
+    list_remove_node(list,del_fun);
 
     list_print(list);
 

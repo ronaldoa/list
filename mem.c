@@ -34,6 +34,7 @@ void * mem_malloc(MEM_SIZE_T size)
 {
     MEM_SIZE_T ptr, ptr2;
     MEM_T *mem, *mem2;
+
     if (0 == size)
     {
         return NULL;
@@ -90,7 +91,7 @@ void * mem_malloc(MEM_SIZE_T size)
             lfree = cur;
         }
 
-        return (U8_T*)mem+SIZEOF_STRUCT_MEM;
+        return (U8_T*)mem + SIZEOF_STRUCT_MEM;
     }
 
     return NULL;
@@ -110,7 +111,7 @@ BOOL mem_free(void *mem)
         return FALSE;
     }
 
-    temp = (MEM_T *)(void *)((U8_T*)ram - SIZEOF_STRUCT_MEM);
+    temp = (MEM_T *)(void *)((U8_T*)mem - SIZEOF_STRUCT_MEM);
 
     temp->used = 0;
 
@@ -119,5 +120,38 @@ BOOL mem_free(void *mem)
         lfree = temp;
     }
 
+    mem_plug_holes(temp);
+
     return TRUE;
 }
+
+
+void mem_plug_holes(MEM_T *mem)
+{
+    MEM_T *nmem = NULL;
+    MEM_T *pmem = NULL;
+
+    nmem = (MEM_T *)(void *)&ram[mem->next];
+
+    if (mem!= nmem && nmem->used == 0 && (U8_T *)nmem != (U8_T *)ram_end)
+    {
+        if (lfree == nmem)
+        {
+            lfree = mem;
+        }
+        mem->next = nmem->next;
+        ((MEM_T *)(void *)&ram[mem->next])->prev = (MEM_SIZE_T)((U8_T *)mem - (U8_T *)ram);
+    }
+
+    pmem = (MEM_T *)(void *)&ram[mem->prev];
+    if (pmem->used == 0 && (U8_T *)pmem != (U8_T *)ram_end)
+    {
+        if (lfree == mem)
+        {
+            lfree = pmem;
+        }
+        pmem->next = mem->next;
+        ((MEM_T *)(void *)&ram[mem->next])->prev = (MEM_SIZE_T)((U8_T *)pmem - (U8_T *)ram);
+    }
+}
+
