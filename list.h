@@ -16,6 +16,8 @@ typedef struct _list
 {
     int len;
     LIST_NODE  *head;
+    void (*dup)(list_node *ref_head);
+    void (*compare)()
 }LIST;
 
 #define INIT_LIST(HEAD,TYPE)\
@@ -62,6 +64,8 @@ LIST* list_remove_node(LIST* ref_head, del del_func);
 void list_print(LIST *head);
 
 LIST * list_init();
+
+INT list_release(LIST* ref_head);
 
 #endif
 

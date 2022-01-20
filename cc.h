@@ -6,7 +6,7 @@
 #define ALIGNED MEM_ALIGNMENT
 #define MIN_SIZE 12
 
-#define MEM_SIZE 1024
+#define MEM_SIZE (1024*1024)
 #define MIN_SIZE_ALIGNED ALIGN_SIZE(MIN_SIZE)
 
 #define ALIGN_BUFFER(size) ((size) + ALIGNED - 1)

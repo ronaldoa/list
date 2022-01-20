@@ -1,32 +1,68 @@
-#include <stdio.h>
-#include "list.h"
+#include "log.h"
+#include "mem.h"
+#include "slist.h"
 #include "interface.h"
 #include "sysconf.h"
+
+BOOL is_del(void *data)
+{
+    if (*(int *)data == 5)
+    {
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+void print(void *data)
+{
+    MY_PRINTF(DBG_INFO,"%d \n", (*(int*)data));
+}
+
+void list_print(SLIST_T *slist,print_func print)
+{
+    for (SLIST_NODE_T *head = slist->head; head!= NULL; head = head->next)
+    {
+        if (slist->print)
+        {
+            print(head->data);
+        }
+    }
+}
+
+
 int main()
 {
+    SLIST_T *list = NULL;
+    int *node = NULL;
     int i;
-    LIST *list = NULL;
 
     init_sys();
 
-    list = list_init();
-
-    if (NULL == list)
+    if (NULL == (list = list_create()))
     {
-        printf("error malloc\r\n");
         return 0;
     }
+    list->print = list_print;
 
     for (i = 0; i < 10; i++)
     {
-        list_insert_node(list,i,compare);
+       node = (int *)MY_MALLOC(sizeof(int));
+       if (NULL == node)
+       {
+            return 0;
+       }
+
+       *node = i;
+       list_add_order(list,(void *)node);
     }
 
-    list_print(list);
+    list->print(list,print);
 
-    list_remove_node(list,del_fun);
+    list_del_node(list,is_del);
 
-    list_print(list);
+    list->print(list,print);
+    list = list_reverse(list);
 
-    return 0;
+    list->print(list,print);
 }

@@ -133,7 +133,7 @@ LIST* list_remove_node(LIST* ref_head, del del_func)
         if (del_func(entry))
         {
             *current = entry->next;
-            MY_FREE(*current);
+            MY_FREE(entry);
             ref_head->len--;
         }
         else
@@ -145,6 +145,25 @@ LIST* list_remove_node(LIST* ref_head, del del_func)
     return ref_head;
 }
 
+INT list_release(LIST* ref_head)
+{
 
+    LIST_NODE **current = NULL;
+    LIST_NODE *entry = NULL;
 
+    if (NULL == ref_head)
+    {
+        return FALSE;
+    }
+
+    for (current = &(ref_head->head); (entry = *current) != NULL;)
+    {
+            current = &((*current)->next);
+            MY_FREE(entry);
+    }
+
+    MY_FREE(ref_head);
+
+    return TRUE;
+}
 

@@ -9,6 +9,7 @@ typedef char CHAR;
 typedef int BOOL;
 typedef size_t  MEM_SIZE_T;
 typedef unsigned char U8_T;
+typedef unsigned int UINT_T;
 
 
 #define TRUE 1
