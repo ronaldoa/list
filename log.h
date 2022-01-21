@@ -19,7 +19,7 @@ extern UINT_T dbg_flags;
     #define MY_PRINTF(flag, format,...)\
         do {\
             if(dbg_flags | flag)\
-            printf("FILE:%s,LINE:%d "format, __FILE__,__LINE__,##__VA_ARGS__);\
+            printf("FILE:%s,LINE:%d " format, __FILE__, __LINE__, ##__VA_ARGS__);\
         }while(0)
 #else
     #define MY_PRINTF(fmt,...)

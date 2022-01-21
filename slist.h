@@ -31,8 +31,11 @@ void list_release(SLIST_T *slist);
 INT list_add_head(SLIST_T *slist, void *data);
 INT list_add_tail(SLIST_T *slist, void *data);
 INT list_add_order(SLIST_T *slist, void *data);
+INT list_add_order2(SLIST_T *slist, void *data);
 INT list_del_node(SLIST_T  *slist,del_func func);
+INT list_del_node2(SLIST_T  *slist,del_func func);
 SLIST_T *list_reverse(SLIST_T *list);
+
 
 #ifdef __cplusplus
 }

@@ -19,6 +19,12 @@ void print(void *data)
     MY_PRINTF(DBG_INFO,"%d \n", (*(int*)data));
 }
 
+BOOL list_compare(void *data, void *value)
+{
+    return (*(int *)data) >= (*(int *)value);
+}
+
+
 void list_print(SLIST_T *slist,print_func print)
 {
     for (SLIST_NODE_T *head = slist->head; head!= NULL; head = head->next)
@@ -30,22 +36,60 @@ void list_print(SLIST_T *slist,print_func print)
     }
 }
 
+void list_free(void *data)
+{
+    MY_FREE(data);
+}
 
 int main()
 {
     SLIST_T *list = NULL;
     int *node = NULL;
     int i;
+    int array[10] = {9,5,67,3,4,2,3,1,0,7};
 
     init_sys();
-
+#if 1
+////////////////////////////////////////////
     if (NULL == (list = list_create()))
     {
+        printf("error%d\r\n",__LINE__);
         return 0;
     }
     list->print = list_print;
+    list->compare = list_compare;
+    list->free_node = list_free;
+////////////////////////////////////////////////////
+    for (i = 0; i< 9;i++)
+    {
+        node = (int *)MY_MALLOC(sizeof(int));
+        if (NULL == node)
+        {
+            printf("error%d\r\n",__LINE__);
+            return 0;
+        }
 
-    for (i = 0; i < 10; i++)
+        *node = array[i];
+        list_add_order(list,(void *)node);
+    }
+
+    list_print(list,print);
+//////////////////////////////////////////////////
+    list_release(list);
+#endif
+
+#if 1
+//////////////////////////////////////////////////
+    if (NULL == (list = list_create()))
+    {
+        printf("error%d\r\n",__LINE__);
+        return 0;
+    }
+    list->print = list_print;
+    list->compare = list_compare;
+    list->free_node = list_free;
+
+      for (i = 0; i < 10; i++)
     {
        node = (int *)MY_MALLOC(sizeof(int));
        if (NULL == node)
@@ -58,11 +102,15 @@ int main()
     }
 
     list->print(list,print);
+    /////////////////////////////////////////////////
 
     list_del_node(list,is_del);
 
     list->print(list,print);
+    ///////////////////////////////////////////////////
     list = list_reverse(list);
 
     list->print(list,print);
+    ///////////////////////////////////////////////////
+#endif
 }

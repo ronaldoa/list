@@ -5,10 +5,9 @@
 U8_T ram_heap[MEM_SIZE_ALIGNED + 2*(SIZEOF_STRUCT_MEM) + MEM_ALIGNMENT];
 #define RAM_HEAP_POINT ram_heap
 
-U8_T *ram;
-MEM_T *ram_end;
-
-MEM_T *lfree;
+U8_T *ram = NULL;
+MEM_T *ram_end = NULL;
+MEM_T *lfree = NULL;
 
 INT init_mem()
 {

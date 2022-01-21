@@ -22,29 +22,34 @@ SLIST_T *list_create()
     return list;
 }
 
-void list_release(SLIST_T *ref_head)
+void list_release(SLIST_T *slist)
 {
     SLIST_NODE_T *current = NULL;
     SLIST_NODE_T *next = NULL;
 
-    if (NULL == ref_head)
+    if (NULL == slist)
     {
         return;
     }
 
-    for (current = ref_head->head; current != NULL;current = next)
+    for (current = slist->head; current != NULL;current = next)
     {
         next = current->next;
 
-        if (ref_head->free_node != NULL)
+        if (slist->free_node != NULL)
         {
-            ref_head->free_node(current->data);
+            slist->free_node(current->data);
+        }
+        else
+        {
+            MY_FREE(current);
         }
 
         MY_FREE(current);
     }
 
-    MY_FREE(ref_head);
+    MY_FREE(slist);
+    slist->lenth = 0;
 
     return;
 }
@@ -66,6 +71,7 @@ INT list_add_head(SLIST_T *slist, void *data)
     new_node->next = slist->head->next;
     slist->head->next = new_node;
 
+    slist->lenth++;
     return TRUE;
 }
 
@@ -79,7 +85,8 @@ INT list_add_tail(SLIST_T *slist, void *data)
         return TRUE;
     }
 
-    for (current = slist->head; current->next != NULL; current = current->next);
+    for (current = slist->head; current->next != NULL; current = current->next)
+        ;
 
     if (NULL == (new_node = (SLIST_NODE_T *)MY_MALLOC(sizeof(SLIST_NODE_T))))
     {
@@ -90,6 +97,7 @@ INT list_add_tail(SLIST_T *slist, void *data)
     new_node->next = NULL;
     current->next= new_node;
 
+    slist->lenth++;
     return TRUE;
 }
 
@@ -123,8 +131,54 @@ INT list_add_order(SLIST_T *slist, void *data)
     new_node->next = current;
     *ptr = new_node;
 
+    slist->lenth++;
+
     return TRUE;
 }
+
+INT list_add_order2(SLIST_T *slist, void *data)
+{
+    SLIST_NODE_T *pre = NULL;
+    SLIST_NODE_T *current = NULL;
+    SLIST_NODE_T *new_node = NULL;
+
+    for (current = slist->head; current != NULL; pre = current, current = pre->next)
+    {
+        if (NULL != slist->compare)
+        {
+            if (slist->compare(data, current->data))
+            {
+                break;
+            }
+        }
+    }
+
+    new_node = (SLIST_NODE_T *)MY_MALLOC(sizeof(SLIST_NODE_T));
+    if (NULL == new_node)
+    {
+        return FALSE;
+    }
+    new_node->data = data;
+    new_node->next = NULL;
+
+    if (pre == NULL)
+    {
+        slist->head = new_node;
+    }
+    else
+    {
+        pre->next = new_node;
+    }
+
+    new_node->next = current;
+
+    slist->lenth++;
+
+    return TRUE;
+
+}
+
+
 
 
 INT list_del_node(SLIST_T  *slist,del_func func)
@@ -142,8 +196,9 @@ INT list_del_node(SLIST_T  *slist,del_func func)
         if (func(current->data))
         {
             *ptr = current->next;
-            MY_FREE (current->data);
+            slist->free_node(current->data);
             MY_FREE(current);
+            slist->lenth--;
         }
         else
         {
@@ -153,6 +208,43 @@ INT list_del_node(SLIST_T  *slist,del_func func)
 
     return TRUE;
 }
+
+
+INT list_del_node_2(SLIST_T  *slist,del_func func)
+{
+    SLIST_NODE_T *pre = NULL;
+    SLIST_NODE_T *current = NULL;
+    if (NULL == slist || NULL == func)
+    {
+        return FALSE;
+    }
+
+    for (current = slist->head; current != NULL;current = pre->next)
+    {
+        if (func(current->data))
+        {
+            if (NULL == pre)
+            {
+                slist->head = current->next;
+                slist->free_node(current->data);
+                MY_FREE(current);
+                slist->lenth--;
+            }
+            else
+            {
+                pre->next = current->next;
+            }
+        }
+        else
+        {
+            pre = current;
+        }
+
+    }
+
+    return TRUE;
+}
+
 
 SLIST_T *list_reverse(SLIST_T *list)
 {
@@ -171,7 +263,6 @@ SLIST_T *list_reverse(SLIST_T *list)
         head->head = next;
     }
     pre->next = NULL;
-
 
     return head;
 }
